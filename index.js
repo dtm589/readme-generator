@@ -71,15 +71,27 @@ const questions = [
 //Function to write README file
 function writeToFile(fileName, data) {
     fs.writeFile(fileName, data, error => {
-        if(error) throw error;
+        if (error) throw error;
         console.log('Your README.md file is ready to look at!')
     });
- }
+}
 
 //function to initialize app
 function init() {
-    return inquirer.createPromptModule(questions);
-};
+    const prompt = inquirer.createPromptModule();
+
+    prompt(questions)
+        .then(userAnswers => {
+            return generateMarkdown(userAnswers);
+        })
+        .then(markdownContent => {
+            writeToFile("README.md", markdownContent);
+        })
+        .catch(error => {
+            console.log("Error :", error);
+        });
+}
+
 
 // Function call to initialize app
 init();
